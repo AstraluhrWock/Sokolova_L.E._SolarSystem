@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 public class ShipController : NetworkMovableObject
 { 
     [SerializeField] private Transform _cameraAttach;
-    private NetworkStartPosition _networkStartPosition;
     private CameraOrbit _cameraOrbit;
     private PlayerLabel _playerLabel;
     private float _shipSpeed;
@@ -40,14 +39,11 @@ public class ShipController : NetworkMovableObject
         base.OnStartAuthority();
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (gameObject.GetComponent<ShipController>() || gameObject.GetComponent<PlanetOrbit>())
-        {
-            this.gameObject.SetActive(false);
-            gameObject.transform.position = _networkStartPosition.transform.position;
-            this.gameObject.SetActive(true);
-        }
+    private void OnTriggerEnter(Collider other)
+    {    
+            gameObject.SetActive(false);
+            gameObject.transform.position = new Vector3(100,100,100);
+            gameObject.SetActive(true);  
     }
     protected override void HasAuthorityMovement()
     {

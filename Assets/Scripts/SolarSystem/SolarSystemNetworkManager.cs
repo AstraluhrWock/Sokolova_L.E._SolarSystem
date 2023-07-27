@@ -5,21 +5,23 @@ using UnityEngine.Networking;
 
 public class SolarSystemNetworkManager : NetworkManager
 {
-    [SerializeField] private string _playerName;
     [SerializeField] private TMP_InputField _inputField;
-    [SerializeField] private int _count;
+    private string _playerName;
+    private int _count;
     Dictionary<int, ShipController> _players = new Dictionary<int, ShipController>();
+
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
     {
         var spawnTransform = GetStartPosition();
         var player = Instantiate(playerPrefab, spawnTransform.position, spawnTransform.rotation);
+        _players.Add(conn.connectionId, player.GetComponent<ShipController>());
         player.GetComponent<ShipController>().PlayerName = _playerName;
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
     }
     public override void OnStartServer()
     {
         base.OnStartServer();
-        //NetworkServer.RegisterHandler(100, ReceiveName);
+        NetworkServer.RegisterHandler(100, ReceiveName);
     }
 
     public class MessageLogin : MessageBase
@@ -45,10 +47,10 @@ public class SolarSystemNetworkManager : NetworkManager
         conn.Send(100, _login);
     }
 
-//    public void ReceiveName(NetworkMessage networkMessage)
-//    {
-//        _players[networkMessage.conn.connectionId].PlayerName = networkMessage.reader.ReadString();
-//        _players[networkMessage.conn.connectionId].gameObject.name = _players[networkMessage.conn.connectionId].PlayerName;
-//        Debug.Log(_players[networkMessage.conn.connectionId]);
-//    }
+    public void ReceiveName(NetworkMessage networkMessage)
+    {
+        _players[networkMessage.conn.connectionId].PlayerName = networkMessage.reader.ReadString();
+        _players[networkMessage.conn.connectionId].gameObject.name = _players[networkMessage.conn.connectionId].PlayerName;
+        Debug.Log(_players[networkMessage.conn.connectionId]);
+    }
 }

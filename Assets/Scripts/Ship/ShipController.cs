@@ -8,6 +8,8 @@ public class ShipController : NetworkMovableObject
     private PlayerLabel _playerLabel;
     private float _shipSpeed;
     private Rigidbody _rb;
+    private StarCollector _starCollector;
+    
     [SyncVar] private string _playerName;
 
     protected override float _speed => _shipSpeed;
@@ -16,7 +18,7 @@ public class ShipController : NetworkMovableObject
         get => _playerName;
         set => _playerName = value;
     }
-   
+
     private void OnGUI()
     {
         if (_cameraOrbit == null)
@@ -36,14 +38,24 @@ public class ShipController : NetworkMovableObject
         _cameraOrbit = FindObjectOfType<CameraOrbit>();
         _cameraOrbit.Initiate(_cameraAttach == null ? transform : _cameraAttach);
         _playerLabel = GetComponentInChildren<PlayerLabel>();
+       _starCollector = FindObjectOfType<StarCollector>();
         base.OnStartAuthority();
     }
 
     private void OnTriggerEnter(Collider other)
     {    
+        if (other.gameObject.GetComponent<Star>())
+        {
+           _starCollector.CmdCollectStar();
+            other.gameObject.SetActive(false);
+            Debug.Log("Star collected");
+        }
+        else
+        {   
             gameObject.SetActive(false);
-            gameObject.transform.position = new Vector3(100,100,100);
-            gameObject.SetActive(true);  
+            gameObject.transform.position = new Vector3(100, 100, 100);
+            gameObject.SetActive(true);
+        }
     }
     protected override void HasAuthorityMovement()
     {

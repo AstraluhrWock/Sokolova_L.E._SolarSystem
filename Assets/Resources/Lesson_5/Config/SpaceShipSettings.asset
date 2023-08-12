@@ -16,5 +16,5 @@ MonoBehaviour:
   _shipSpeed: 1248
   _faster: 3
   _normalFov: 60
-  _fasterFov: 38
-  _changeFovSpeed: 0.5
+  _fasterFov: 17.7
+  _changeFovSpeed: 0.1

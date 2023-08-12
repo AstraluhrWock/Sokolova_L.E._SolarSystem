@@ -12,7 +12,7 @@ public class PlayerLabel : MonoBehaviour
         }
         var style = new GUIStyle();
         style.normal.background = Texture2D.redTexture;
-        style.normal.textColor = Color.blue;
+        style.normal.textColor = Color.white;
         var objects = ClientScene.objects;
         for (int i = 0; i < objects.Count; i++)
         {
